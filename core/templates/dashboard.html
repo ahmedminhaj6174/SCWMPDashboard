@@ -1,0 +1,184 @@
+{% extends "layouts/base.html" %}
+{% load static %}   
+{% block content %}
+    <!-- <div class="d-flex"> -->
+        <!-- {% include 'layouts/sidebar.html' %} -->
+        <!-- <div class="w-100"> -->
+            <!-- {% include 'layouts/header.html' %} -->
+            <!-- <div class="my-3 mx-3">
+                <h1>Dashboard</h1>
+                <div class="d-flex">
+                    <div class="col-3 card mx-3">
+                      <div class="card-body">
+                        <h5 class="card-title text-primary">Total Views</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Yearly</h6>
+                        <div>
+                          <canvas id="total-views-chart"></canvas>
+                        </div>
+                        <h1 class="card-text text-end">5,000,008</h1>
+                      </div>
+                    </div>
+                    <div class="col-3 card mx-3">
+                      <div class="card-body">
+                        <h5 class="card-title text-primary">Revenue</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Annual</h6>
+                        <div>
+                          <canvas id="revenue-chart"></canvas>
+                        </div>
+                        <h1 class="card-text text-end">$8,108</h1>
+                      </div>
+                    </div>
+                    <div class="col-3 card mx-3 h-25">
+                      <div class="card-body">
+                        <h5 class="card-title text-primary">Growth Rate</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Yearly</h6>
+                        <h1 class="card-text text-end text-success">79%</h1>
+                      </div>
+                    </div>
+                </div>
+ 
+
+             </div> -->
+            
+        <!-- </div>
+    </div> -->
+
+    <div class="d-flex">
+      <div class="w-100">
+        <div class="my-3 mx-3">
+          <h1>WX Data Chart</h1>
+          <label for="siteSelector">Select Site:</label>
+          <select id="siteSelector" class="form-select w-50 mb-3">
+            <option value="nmwrri_36.4979579408_-106.4383270272_Don Martinez_CR1000X_Daily">Daily</option>
+            <option value="nmwrri_36.4979579408_-106.4383270272_Don Martinez_CR1000X_Hourly">Hourly</option>
+            <option value="nmwrri_36.4979579408_-106.4383270272_Don Martinez_CR1000X_Min30">Min 30</option>
+          </select>
+          <div class="d-flex">
+            
+      <canvas id="wxChart" width="400" height="200"></canvas>
+
+    
+    <script>
+      // Fetch data and render chart
+      let chart; // Reference to the Chart.js instance
+      function fetchAndRenderChart(siteName) {
+        fetch(`/dashboard/chart-data/?site_name=${siteName}`)
+          .then((response) => response.json())
+          .then((data) => {
+            const ctx = document.getElementById("wxChart").getContext("2d");
+            
+            // Destroy existing chart before creating a new one
+            if (chart) chart.destroy();
+    
+            chart = new Chart(ctx, {
+              type: "line",
+              data: {
+                labels: data.labels, // X-axis (timestamps)
+                datasets: [
+                  {
+                    label: "Water Level (Avg)",
+                    data: data.datasets[0].data,
+                    backgroundColor: "rgba(75, 192, 192, 0.2)",
+                    borderColor: "rgba(75, 192, 192, 1)",
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    tension: 0, // Straight lines
+                    yAxisID: "yLeft", // Attach to the left Y-axis
+                  },
+                  {
+                    label: "Conductivity (Avg)",
+                    data: data.datasets[1].data,
+                    backgroundColor: "rgba(255, 159, 64, 0.2)",
+                    borderColor: "rgba(255, 159, 64, 1)",
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    tension: 0, // Straight lines
+                    yAxisID: "yLeft", // Attach to the left Y-axis
+                  },
+                  {
+                    label: "T (Avg)",
+                    data: data.datasets[2].data,
+                    backgroundColor: "rgba(54, 162, 235, 0.2)",
+                    borderColor: "rgba(54, 162, 235, 1)",
+                    borderWidth: 2,
+                    pointRadius: 3,
+                    tension: 0, // Straight lines
+                    yAxisID: "yRight", // Attach to the right Y-axis
+                  },
+                ],
+              },
+              options: {
+                responsive: true,
+                plugins: {
+                  legend: {
+                    position: "top",
+                    labels: {
+                      font: { size: 14 },
+                    },
+                  },
+                },
+                scales: {
+                  x: {
+                    title: {
+                      display: true,
+                      text: "Timestamp",
+                      font: { size: 14 },
+                    },
+                    ticks: {
+                      maxRotation: 45,
+                      minRotation: 45,
+                    },
+                  },
+                  yLeft: {
+                    type: "linear",
+                    position: "left",
+                    min: 0,
+                    max: 1,
+                    title: {
+                      display: true,
+                      text: "Water Level (Avg) & Conductivity (Avg)",
+                      font: { size: 14 },
+                    },
+                  },
+                  yRight: {
+                    type: "linear",
+                    position: "right",
+                    min: 0,
+                    max: 20,
+                    grid: { drawOnChartArea: false },
+                    title: {
+                      display: true,
+                      text: "T (Avg)",
+                      font: { size: 14 },
+                    },
+                  },
+                },
+              },
+            });
+          })
+          .catch((error) => console.error("Error fetching chart data:", error));
+      }
+    
+      // Handle site selection
+      document.getElementById("siteSelector").addEventListener("change", (event) => {
+        const siteName = event.target.value;
+        fetchAndRenderChart(siteName);
+      });
+    
+      // Initial chart rendering (default to the first site)
+      fetchAndRenderChart("nmwrri_36.4979579408_-106.4383270272_Don Martinez_CR1000X_Daily");
+    </script>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+
+    
+    
+
+    {% endblock content %} 
+    {% block scripts %}
+    <script src="{% static '/assets/js/index.js' %}"></script>
+    {% endblock scripts%}
+    

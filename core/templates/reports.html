@@ -1,0 +1,50 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block content %}
+    <div class="m-3">
+        <h1 class="ml-3">WX Data Table</h1>
+        <table id="datatable"></table>
+    </div>
+{% endblock content %}
+
+{% block file1_content %}
+<div class="container mt-3">
+    <h1>WX Data Report</h1>
+    
+    <!-- Filters -->
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <label for="siteNameFilter" class="form-label">Site Name</label>
+            <select id="siteNameFilter" class="form-select">
+                <option value="">Select Site</option>
+                <option value="nmwrri_36.4979579408_-106.4383270272_Don Martinez_CR1000X_Daily">Daily</option>
+                <option value="nmwrri_36.4979579408_-106.4383270272_Don Martinez_CR1000X_Hourly">Hourly</option>
+                <option value="nmwrri_36.4979579408_-106.4383270272_Don Martinez_CR1000X_Min30">Min30</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="startDateFilter" class="form-label">Start Date</label>
+            <input type="date" id="startDateFilter" class="form-control">
+        </div>
+        <div class="col-md-3">
+            <label for="endDateFilter" class="form-label">End Date</label>
+            <input type="date" id="endDateFilter" class="form-control">
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+            <button id="filterBtn" class="btn btn-primary w-100">Filter</button>
+        </div>
+    </div>
+
+    <!-- DataTable -->
+    <table id="datatable"></table>
+
+    <!-- Export to CSV -->
+    <button id="exportCsvBtn" class="btn btn-success mt-3">Download CSV</button>
+</div>
+{% endblock file1_content %}
+
+
+{% block scripts %}
+<script src="{% static '/assets/js/reports.js' %}"></script>
+{% endblock scripts%}
