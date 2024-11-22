@@ -4,7 +4,7 @@ from .models import WXData
 from django.utils.timezone import now, timedelta
 from datetime import datetime
 from django.views.decorators.csrf import csrf_exempt
-import datetime
+
 
 
 def chart_data(request):
